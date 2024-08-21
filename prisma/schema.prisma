@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Injector {
+  id                 Int      @id @default(autoincrement())
+  created_at         DateTime @default(now())
+  email              String   @unique
+  phone              String?  @unique
+  name               String
+  birthDate          DateTime @db.Date
+  gender             String
+  address            String
+  occupation         String
+  approve            Boolean  @default(false)
+  disableSchedule    Boolean  @default(false)
+  image              String?
+  otherQualification String?
+  resume             String?
+  role               String
+  AHPRARegistration  String?
+  medicalDegree      String?
+  userId             Int      @unique
+  user               User     @relation(fields: [userId], references: [id])
+}
+
+model Patient {
+  id                     Int      @id @default(autoincrement())
+  createdAt              DateTime @default(now())
+  email                  String   @unique
+  phone                  String   @unique
+  name                   String
+  birthDate              DateTime @db.Date
+  gender                 String
+  address                String
+  occupation             String
+  emergencyContactNumber String?  @db.VarChar(15)
+  currentMedication      String?
+  pastMedicalHistory     String?
+  allergies              String?
+  image                  String?  @db.VarChar(255)
+  treatmentPlace         String?  @db.VarChar(255)
+  userId                 Int      @unique
+  user                   User     @relation(fields: [userId], references: [id])
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  email     String    @unique
+  name      String
+  phone     String    @unique
+  password  String
+  role      String
+  Injector  Injector?
+  Patient   Patient?
+}
